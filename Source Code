@@ -1,0 +1,74 @@
+from turtle import *
+from random import *
+import time
+
+# Setup the screen for the turtle race
+screen = Screen()
+screen.setup(width=800, height=400)  # Set the dimensions of the window
+screen.bgcolor("lightblue")  # Set the background color to light blue
+screen.title("Welcome to the Turtle Race!")  # Set the title of the window
+
+# User input for betting
+user_input = screen.textinput(title="Make A Bet", prompt="Which turtle do you think will win? (Pick a color from the rainbow!)")
+
+# Define turtle colors and their starting positions
+timmy_colors = ["violet", "indigo", "blue", "green", "yellow"]
+timmy_y_position = [-80, -40, 0, 40, 80]  # Y-coordinates for each turtle's lane
+my_timmys = []  # List to hold turtle objects
+
+# Drawing the finish line
+finish_line = Turtle()  # Create a new turtle for drawing the finish line
+finish_line.hideturtle()  # Hide the turtle cursor
+finish_line.penup()  # Don't draw when moving to the start position
+finish_line.goto(390, -150)  # Move to the position for the finish line
+finish_line.pendown()  # Start drawing
+finish_line.pensize(5)  # Set the width of the line
+
+# Draw the finish line
+for _ in range(2):  # Draw a rectangle for the finish line
+    finish_line.forward(300)  # Draw the horizontal line
+    finish_line.left(90)  # Turn left
+    finish_line.forward(300)  # Draw the vertical line
+    finish_line.left(90)  # Turn left again
+
+# Creating turtles with their initial positions and colors
+for turtles_index in range(5):  # Loop through each color
+    timmy = Turtle("turtle")  # Create a turtle object
+    timmy.shapesize(stretch_wid=2, stretch_len=2)  # Enlarge the turtles for visibility
+    timmy.pu()  # Lift the pen to move without drawing
+    timmy.fillcolor(timmy_colors[turtles_index])  # Set the turtle's color
+    timmy.goto(x=-370, y=timmy_y_position[turtles_index])  # Position the turtle at the start line
+    my_timmys.append(timmy)  # Add the turtle to the list
+
+# Race starts here
+is_true = False  # Variable to control the race loop
+
+if user_input:  # Check if the user has placed a bet
+    is_true = True  # Set to True to start the race
+
+# Race loop
+while is_true:
+    for turtles_index in range(5):  # Loop through each turtle
+        my_timmys[turtles_index].fd(randint(0, 10))  # Move each turtle forward by a random distance
+
+        # Check if a turtle reaches the finish line
+        if my_timmys[turtles_index].xcor() > 390:  # If the turtle's x-coordinate is greater than 390
+            is_true = False  # End the race
+
+            # If the user won the bet
+            if my_timmys[turtles_index].fillcolor() == user_input:
+                print(f"Your bet was right, the winner is {user_input}!")  # Inform the user they won
+
+                # Winning turtle flashes
+                for _ in range(3):  # Flash the winning turtle three times
+                    my_timmys[turtles_index].hideturtle()  # Hide the turtle
+                    screen.update()  # Update the screen to show the change
+                    time.sleep(0.5)  # Pause for half a second
+                    my_timmys[turtles_index].showturtle()  # Show the turtle again
+                    screen.update()  # Update the screen to show the change
+                    time.sleep(0.5)  # Pause again
+            else:
+                print(f"Your bet was wrong, the winner is {my_timmys[turtles_index].fillcolor()}")  # Inform the user they lost
+
+# Exit the game on click
+screen.exitonclick()  # Wait for the user to click to close the window
